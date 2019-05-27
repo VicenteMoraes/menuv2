@@ -1,0 +1,70 @@
+@font-face{
+  font-family: "RobotoMono";
+  src: url("./fonts/Roboto-Thin.ttf");
+}
+
+* {
+  font-family: "RobotoMono", monospace;
+  text-align: center;
+}
+
+a{
+  text-decoration: none;
+  color:#d50000;
+
+}
+
+a:hover {
+  color: red;
+  text-decoration: underline;
+}
+
+.link{
+  text-decoration: none;
+  color: white;
+}
+.link:hover{
+  color: #d50000;
+  text-decoration: none;
+}
+
+.linkEdit{
+  text-decoration: none;
+  color:#d50000;
+}
+
+.linkEdit:hover{
+  color: #d50000;
+  text-decoration: none;
+}
+.linkBack{
+  color: #d50000;
+  text-decoration: none;
+}
+
+.linkCad{
+  color:#d50000;
+}
+
+.linkCad:hover{
+  color:#d50000;
+  text-decoration: none;
+}
+
+#cadButton{
+margin-left: 10px;
+margin-right: 0px;
+}
+
+#cadButton:hover{
+  color: white;
+}
+
+#logButton{
+  margin-left: 900px;
+}
+
+.home{
+  color: white;
+  margin-left: 1100px;
+}
