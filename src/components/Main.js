@@ -7,25 +7,22 @@ import Confirm from './Confirm'
 import Sucess from './Sucess'
 import Control from './Control'
 
-
 export class Main extends Component {
     state = {
-        user: "",
         password: "",
-        confirmPassword: "",
         email: "",
         placeName: "",
         placeDescription: "",
         placePhone: ""
-    }
+    };
 
-    handleChange = input => e => {
-        this.setState({ [input]: e.target.value });
-    }
+    handleChange = ({ name, value }) => {
+        this.setState({ [name]: value });
+    };
 
     render() {
-        const { user, password, confirmPassword, email, placeName, placeDescription, placePhone } = this.state;
-        const values = { user, password, confirmPassword, email, placeName, placeDescription, placePhone }
+        const {password, email, placeName, placeDescription, placePhone } = this.state;
+        const values = {password, email, placeName, placeDescription, placePhone };
 
         const LoginPage = (props) => {
             return (
@@ -34,7 +31,7 @@ export class Main extends Component {
                     values={values}
                 />
             );
-        }
+        };
 
         const CadPage = (props) => {
             return (
@@ -43,7 +40,7 @@ export class Main extends Component {
                     values={values}
                 />
             );
-        }
+        };
 
         const ConfirmPage = (props) => {
             return (
@@ -51,7 +48,7 @@ export class Main extends Component {
                     values={this.state}
                 />
             );
-        }
+        };
 
         const SucessPage = (props) => {
             return (
@@ -59,7 +56,7 @@ export class Main extends Component {
                     values={this.state}
                 />
             );
-        }
+        };
 
         const ControlPage = (props) => {
             return (
@@ -68,7 +65,7 @@ export class Main extends Component {
                     values={values}
                 />
             );
-        }
+        };
 
         return (
             <Router>

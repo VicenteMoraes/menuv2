@@ -28,7 +28,7 @@ const theme = createMuiTheme({
 export class Confirm extends Component {
     render() {
         const { values } = this.props;
-        console.log(values)
+        console.log(values);
         return (
             <MuiThemeProvider theme={theme}>
                 <React.Fragment>

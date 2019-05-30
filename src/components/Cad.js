@@ -10,6 +10,10 @@ import Button from '@material-ui/core/Button'
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import { Link } from 'react-router-dom'
 import Home from '@material-ui/icons/Home';
+import * as firebase from "firebase/app"
+import "firebase/auth"
+import "firebase/database"
+import "firebase/storage"
 
 const theme = createMuiTheme({
     palette: {
@@ -22,10 +26,62 @@ const theme = createMuiTheme({
     }
 });
 
+const config = {
+    apiKey: "AIzaSyBxlwzW2fztFVJuBCJZp7EVC-sg8Mo-pWE",
+    authDomain: "webmenu-c7757.firebaseapp.com",
+    databaseURL: "https://webmenu-c7757.firebaseio.com",
+    projectid: "webmenu-c7757",
+    storaBucket: "webmenu-c7757.appspot.com",
+};
+
+firebase.initializeApp(config);
+var database = firebase.database();
+
 export class Cad extends Component {
+    state = {
+        email: "",
+        password: "",
+        placeName: "",
+        placeDescription: "",
+        placePhone: "",
+    };
+
+    updateInput = input => e => {
+        this.setState({ [input]: e.target.value });
+    };
+
+    register_on_DB(){
+        let uid = firebase.auth().currentUser.getIdToken(true);
+        database.ref("users/" + uid).set({
+            description: this.state.placeDescription,
+            phone: this.state.placePhone,
+            name: this.state.placeName,
+            email: this.state.email,
+            uid: uid
+        });
+    }
+
+    Auth(props) {
+        if(this.state.email && this.state.password) {
+            firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+                .then(props.handleChange({name: "email", value: this.state.email}))
+                .then(props.handleChange({name: "password", value: this.state.password}))
+                .then(this.register_on_DB())
+                .catch(function (error) {
+                    var code = error.code;
+                    var message = error.message;
+                    if (code === 'auth/wrong-password') {
+                        alert('Senha incorreta.');
+                    } else {
+                        alert(message);
+                    }
+                    console.log(error);
+                })
+        }
+    }
+
     render() {
-        const { values, handleChange } = this.props;
-        console.log(values);
+        console.log(this.props.values);
         return (
             <MuiThemeProvider theme={theme}>
                 <React.Fragment>
@@ -42,58 +98,42 @@ export class Cad extends Component {
                     <h4>Cadastro de usuário</h4>
                     <TextField
                         label="Usuário"
-                        placeholder="Nome de usuário"
+                        placeholder="Digite seu email"
                         margin="normal"
-                        onChange={handleChange("user")}
-                        defaultValue={values.user}
+                        onChange={this.updateInput("email")}
+                        defaultValue={this.props.values.user}
                     />
                     <br />
                     <TextField
                         label="Senha"
                         placeholder="Digite uma senha"
                         margin="normal"
-                        onChange={handleChange("password")}
-                        defaultValue={values.password}
-                    />
-                    <br />
-                    <TextField
-                        label="Senha"
-                        placeholder="Confirmar senha"
-                        margin="normal"
-                        onChange={handleChange("confirmPassword")}
-                        defaultValue={values.confirmPassword}
-                    />
-                    <br />
-                    <TextField
-                        label="Email"
-                        placeholder="Endereço de email"
-                        margin="normal"
-                        onChange={handleChange("email")}
-                        defaultValue={values.email}
+                        onChange={this.updateInput("password")}
+                        defaultValue={this.props.values.password}
                     />
                     <h4>Dados do restaurante</h4>
                     <TextField
                         label="Nome do estabelecimento"
                         placeholder="Estabelecimento"
                         margin="normal"
-                        onChange={handleChange("placeName")}
-                        defaultValue={values.placeName}
+                        onChange={this.updateInput("placeName")}
+                        defaultValue={this.props.values.placeName}
                     />
                     <br />
                     <TextField
                         label="Descrição"
                         placeholder="Descrição"
                         margin="normal"
-                        onChange={handleChange("placeDescription")}
-                        defaultValue={values.placeDescription}
+                        onChange={this.updateInput("placeDescription")}
+                        defaultValue={this.props.values.placeDescription}
                     />
                     <br />
                     <TextField
                         label="Telefone para contato"
                         placeholder="Fone"
                         margin="normal"
-                        onChange={handleChange("placePhone")}
-                        defaultValue={values.placePhone}
+                        onChange={this.updateInput("placePhone")}
+                        defaultValue={this.props.values.placePhone}
                     />
                     <br />
                     <br />
@@ -103,8 +143,8 @@ export class Cad extends Component {
                     <br />
                     <br />
                     
-                    <Button variant="contained"color="primary">
-                    <Link className="link" to="/confirm" color="secondary">Enviar</Link>
+                    <Button variant="contained"color="primary" onClick={() => { this.Auth(this.props) }}>
+                        <Link className="link" to="/" color="secondary">Enviar</Link>
                     </Button>
                     <br />
                     <br />
