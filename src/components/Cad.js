@@ -26,16 +26,6 @@ const theme = createMuiTheme({
     }
 });
 
-const config = {
-    apiKey: "AIzaSyBxlwzW2fztFVJuBCJZp7EVC-sg8Mo-pWE",
-    authDomain: "webmenu-c7757.firebaseapp.com",
-    databaseURL: "https://webmenu-c7757.firebaseio.com",
-    projectid: "webmenu-c7757",
-    storaBucket: "webmenu-c7757.appspot.com",
-};
-
-firebase.initializeApp(config);
-var database = firebase.database();
 
 export class Cad extends Component {
     state = {
@@ -50,9 +40,10 @@ export class Cad extends Component {
         this.setState({ [input]: e.target.value });
     };
 
-    register_on_DB(){
-        let uid = firebase.auth().currentUser.getIdToken(true);
-        database.ref("users/" + uid).set({
+    register_on_DB(props){
+        let uid = firebase.auth().currentUser.uid;
+        console.log(uid);
+        props.database.ref("users/" + uid).set({
             description: this.state.placeDescription,
             phone: this.state.placePhone,
             name: this.state.placeName,
@@ -66,7 +57,10 @@ export class Cad extends Component {
             firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
                 .then(props.handleChange({name: "email", value: this.state.email}))
                 .then(props.handleChange({name: "password", value: this.state.password}))
-                .then(this.register_on_DB())
+                .then(props.handleChange({name: "placeName", value: this.state.placeName}))
+                .then(props.handleChange({name: "placePhone", value: this.state.placePhone}))
+                .then(props.handleChange({name: "placeDescription", value: this.state.placeDescription}))
+                .then(this.register_on_DB(this.props.values))
                 .catch(function (error) {
                     var code = error.code;
                     var message = error.message;
@@ -101,7 +95,7 @@ export class Cad extends Component {
                         placeholder="Digite seu email"
                         margin="normal"
                         onChange={this.updateInput("email")}
-                        defaultValue={this.props.values.user}
+                        defaultValue={this.props.values.email}
                     />
                     <br />
                     <TextField
