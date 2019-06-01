@@ -3,9 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Home from "./Home";
 import Login from "./Login";
 import Cad from './Cad'
-import Confirm from './Confirm'
-import Sucess from './Sucess'
-import Control from './Control'
 
 import * as firebase from "firebase/app";
 
@@ -22,25 +19,25 @@ let database = firebase.database();
 
 export class Main extends Component {
     state = {
-        password: "",
         email: "",
         placeName: "",
         placeDescription: "",
-        placePhone: ""
+        placePhone: "",
+        user: null
     };
 
-    handleChange = ({ name, value }) => {
-        this.setState({ [name]: value });
+    updateState = (state) => {
+        this.setState(state);
     };
 
     render() {
-        const {password, email, placeName, placeDescription, placePhone } = this.state;
-        const values = {password, email, placeName, placeDescription, placePhone, database };
+        const {email, placeName, placeDescription, placePhone } = this.state;
+        const values = {email, placeName, placeDescription, placePhone, database };
 
         const LoginPage = (props) => {
             return (
                 <Login
-                    handleChange={this.handleChange}
+                    updateState={this.updateState}
                     values={values}
                 />
             );
@@ -49,32 +46,7 @@ export class Main extends Component {
         const CadPage = (props) => {
             return (
                 <Cad
-                    handleChange={this.handleChange}
-                    values={values}
-                />
-            );
-        };
-
-        const ConfirmPage = (props) => {
-            return (
-                <Confirm
-                    values={this.state}
-                />
-            );
-        };
-
-        const SucessPage = (props) => {
-            return (
-                <Sucess
-                    values={this.state}
-                />
-            );
-        };
-
-        const ControlPage = (props) => {
-            return (
-                <Control
-                    handleChange={this.handleChange}
+                    updateState={this.updateState}
                     values={values}
                 />
             );
@@ -87,9 +59,6 @@ export class Main extends Component {
                         <Route path="/" exact component={Home} />
                         <Route path="/login" render={LoginPage} />
                         <Route path="/cadastro" render={CadPage} />
-                        <Route path="/confirm" render={ConfirmPage} />
-                        <Route path="/sucess" render={SucessPage} />
-                        <Route path="/control" render={ControlPage} />
                     </Switch>
                 </React.Fragment>
             </Router >

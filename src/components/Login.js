@@ -10,7 +10,7 @@ import Lock from '@material-ui/icons/Lock'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment';
-import {Link} from 'react-router-dom'
+import {Link, withRouter} from 'react-router-dom'
 import Home from '@material-ui/icons/Home';
 import * as firebase from "firebase/app"
 import "firebase/auth"
@@ -33,26 +33,30 @@ export class Login extends Component {
         password: "",
     };
 
-    Auth(props) {
-        if(this.state.email && this.state.password) {
-            firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-                .then(props.handleChange({name: "email", value: this.state.email}))
-                .then(props.handleChange({name: "password", value: this.state.password}))
-                .catch(function (error) {
-                    var code = error.code;
-                    var message = error.message;
-                    if (code === 'auth/wrong-password') {
-                        alert('Senha incorreta.');
-                    } else {
-                        alert(message);
-                    }
-                    console.log(error);
-                })
+    async Auth(props) {
+        let response = await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+            .catch(function (error) {
+                var code = error.code;
+                var message = error.message;
+                if (code === 'auth/wrong-password') {
+                    alert('Senha incorreta.');
+                } else {
+                    alert(message);
+                }
+                console.log(error);
+                return false;
+            });
+        if (response) {
+            props.updateState({
+                email: this.state.email,
+                user: firebase.auth().currentUser
+            });
+            this.props.history.push("/");
         }
     }
 
     updateInput = input => e => {
-        this.setState({ [input]: e.target.value });
+        this.setState({[input]: e.target.value});
     };
 
     render() {
@@ -108,8 +112,10 @@ export class Login extends Component {
                     <br/>
                     <br/>
                     <Button variant="contained" color="primary"
-                            onClick={() => { this.Auth(this.props) }}>
-                        <Link className="link" to="/" color="inherit">Entrar</Link>
+                            onClick={() => {
+                                this.Auth(this.props)
+                            }}>
+                        Entrar
                     </Button>
                     <br/>
                     <br/>
@@ -121,4 +127,4 @@ export class Login extends Component {
     }
 }
 
-export default Login
+export default withRouter(Login)
