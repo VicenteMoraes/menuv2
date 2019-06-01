@@ -3,72 +3,55 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Home from "./Home";
 import Login from "./Login";
 import Cad from './Cad'
-import Confirm from './Confirm'
-import Sucess from './Sucess'
-import Control from './Control'
 
+import * as firebase from "firebase/app";
+
+const config = {
+    apiKey: "AIzaSyBxlwzW2fztFVJuBCJZp7EVC-sg8Mo-pWE",
+    authDomain: "webmenu-c7757.firebaseapp.com",
+    databaseURL: "https://webmenu-c7757.firebaseio.com",
+    projectid: "webmenu-c7757",
+    storageBucket: "webmenu-c7757.appspot.com",
+};
+
+firebase.initializeApp(config);
+let database = firebase.database();
+let storage = firebase.storage();
 
 export class Main extends Component {
     state = {
-        user: "",
-        password: "",
-        confirmPassword: "",
         email: "",
         placeName: "",
         placeDescription: "",
-        placePhone: ""
-    }
+        placePhone: "",
+        user: null
+    };
 
-    handleChange = input => e => {
-        this.setState({ [input]: e.target.value });
-    }
+    updateState = (state) => {
+        this.setState(state);
+    };
 
     render() {
-        const { user, password, confirmPassword, email, placeName, placeDescription, placePhone } = this.state;
-        const values = { user, password, confirmPassword, email, placeName, placeDescription, placePhone }
+        const {email, placeName, placeDescription, placePhone} = this.state;
+        const values = {email, placeName, placeDescription, placePhone, database, storage};
 
         const LoginPage = (props) => {
             return (
                 <Login
-                    handleChange={this.handleChange}
+                    updateState={this.updateState}
                     values={values}
                 />
             );
-        }
+        };
 
         const CadPage = (props) => {
             return (
                 <Cad
-                    handleChange={this.handleChange}
+                    updateState={this.updateState}
                     values={values}
                 />
             );
-        }
-
-        const ConfirmPage = (props) => {
-            return (
-                <Confirm
-                    values={this.state}
-                />
-            );
-        }
-
-        const SucessPage = (props) => {
-            return (
-                <Sucess
-                    values={this.state}
-                />
-            );
-        }
-
-        const ControlPage = (props) => {
-            return (
-                <Control
-                    handleChange={this.handleChange}
-                    values={values}
-                />
-            );
-        }
+        };
 
         return (
             <Router>
@@ -77,9 +60,6 @@ export class Main extends Component {
                         <Route path="/" exact component={Home} />
                         <Route path="/login" render={LoginPage} />
                         <Route path="/cadastro" render={CadPage} />
-                        <Route path="/confirm" render={ConfirmPage} />
-                        <Route path="/sucess" render={SucessPage} />
-                        <Route path="/control" render={ControlPage} />
                     </Switch>
                 </React.Fragment>
             </Router >

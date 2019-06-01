@@ -49,7 +49,7 @@ export class Home extends Component {
         </React.Fragment>
       </MuiThemeProvider>
     )
-    {/* image={require ("./images/food.jpg")} */}
+    //{ image={require ("./images/food.jpg")} }
   }
 }
 

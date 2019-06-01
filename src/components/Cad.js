@@ -1,15 +1,20 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import { createMuiTheme } from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core//Typography'
-import red from '@material-ui/core/colors/red'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import CloudUpload from '@material-ui/icons/CloudUpload'
-import { Link } from 'react-router-dom'
+import Typography from '@material-ui/core//Typography';
+import red from '@material-ui/core/colors/red';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import CloudUpload from '@material-ui/icons/CloudUpload';
+import {Link, withRouter} from 'react-router-dom';
 import Home from '@material-ui/icons/Home';
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
+import "firebase/storage";
+
 
 const theme = createMuiTheme({
     palette: {
@@ -22,19 +27,82 @@ const theme = createMuiTheme({
     }
 });
 
+
 export class Cad extends Component {
+    state = {
+        email: "",
+        password: "",
+        placeName: "",
+        placeDescription: "",
+        placePhone: "",
+        user: null
+    };
+
+    updateInput = input => e => {
+        this.setState({[input]: e.target.value});
+    };
+
+    async register_on_DB(props) {
+        let uid = await firebase.auth().currentUser.uid
+            .catch(function (error) {
+                const message = error.message;
+                alert(message);
+                console.log(error);
+                return false;
+            });
+        if (uid)
+            props.database.ref("users/" + uid)
+                .set({
+                    description: this.state.placeDescription,
+                    phone: this.state.placePhone,
+                    name: this.state.placeName,
+                    email: this.state.email,
+                    uid: uid
+                })
+                .catch(function (error) {
+                    const message = error.message;
+                    alert(message);
+                    console.log(error);
+                    return false;
+                });
+    }
+
+    async auth(props) {
+        let response = await firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .catch(function (error) {
+                const code = error.code;
+                const message = error.message;
+                if (code === 'auth/wrong-password') {
+                    alert('Senha incorreta.');
+                } else {
+                    alert(message);
+                }
+                console.log(error);
+                return false;
+            });
+        if (response) {
+            props.updateState({
+                email: this.state.email,
+                placeName: this.state.placeName,
+                placeDescription: this.state.placeDescription,
+                placePhone: this.state.placePhone,
+                user: firebase.auth().currentUser
+            });
+            await this.register_on_DB(this.props.values);
+            this.props.history.push("/");
+        }
+    }
+
     render() {
-        const { values, handleChange } = this.props;
-        console.log(values);
         return (
             <MuiThemeProvider theme={theme}>
                 <React.Fragment>
-                    <AppBar position="static" color="primary" >
-                        <Toolbar >
+                    <AppBar position="static" color="primary">
+                        <Toolbar>
                             <Typography variant="h5">
                                 WebMenu
                             </Typography>
-                            <Link to="/" >
+                            <Link to="/">
                                 <Home className="home"/>
                             </Link>
                         </Toolbar>
@@ -42,77 +110,63 @@ export class Cad extends Component {
                     <h4>Cadastro de usuário</h4>
                     <TextField
                         label="Usuário"
-                        placeholder="Nome de usuário"
+                        placeholder="Digite seu email"
                         margin="normal"
-                        onChange={handleChange("user")}
-                        defaultValue={values.user}
+                        onChange={this.updateInput("email")}
+                        defaultValue={this.props.values.email}
                     />
-                    <br />
+                    <br/>
                     <TextField
                         label="Senha"
-                        placeholder="Digite uma senha"
+                        placeholder="Digite sua senha"
                         margin="normal"
-                        onChange={handleChange("password")}
-                        defaultValue={values.password}
-                    />
-                    <br />
-                    <TextField
-                        label="Senha"
-                        placeholder="Confirmar senha"
-                        margin="normal"
-                        onChange={handleChange("confirmPassword")}
-                        defaultValue={values.confirmPassword}
-                    />
-                    <br />
-                    <TextField
-                        label="Email"
-                        placeholder="Endereço de email"
-                        margin="normal"
-                        onChange={handleChange("email")}
-                        defaultValue={values.email}
+                        onChange={this.updateInput("password")}
+                        defaultValue={this.props.values.password}
                     />
                     <h4>Dados do restaurante</h4>
                     <TextField
                         label="Nome do estabelecimento"
                         placeholder="Estabelecimento"
                         margin="normal"
-                        onChange={handleChange("placeName")}
-                        defaultValue={values.placeName}
+                        onChange={this.updateInput("placeName")}
+                        defaultValue={this.props.values.placeName}
                     />
-                    <br />
+                    <br/>
                     <TextField
                         label="Descrição"
                         placeholder="Descrição"
                         margin="normal"
-                        onChange={handleChange("placeDescription")}
-                        defaultValue={values.placeDescription}
+                        onChange={this.updateInput("placeDescription")}
+                        defaultValue={this.props.values.placeDescription}
                     />
-                    <br />
+                    <br/>
                     <TextField
                         label="Telefone para contato"
                         placeholder="Fone"
                         margin="normal"
-                        onChange={handleChange("placePhone")}
-                        defaultValue={values.placePhone}
+                        onChange={this.updateInput("placePhone")}
+                        defaultValue={this.props.values.placePhone}
                     />
-                    <br />
-                    <br />
+                    <br/>
+                    <br/>
                     Adicionar logo: <Button variant="contained" size="small" color="primary">
                     <CloudUpload color="inherit"/>
+                </Button>
+                    <br/>
+                    <br/>
+
+                    <Button variant="contained" color="primary" onClick={() => {
+                        this.auth(this.props)
+                    }}>
+                        Enviar
                     </Button>
-                    <br />
-                    <br />
-                    
-                    <Button variant="contained"color="primary">
-                    <Link className="link" to="/confirm" color="secondary">Enviar</Link>
-                    </Button>
-                    <br />
-                    <br />
+                    <br/>
+                    <br/>
                 </React.Fragment>
             </MuiThemeProvider>
         )
     }
 }
 
-export default Cad
+export default withRouter(Cad)
 
