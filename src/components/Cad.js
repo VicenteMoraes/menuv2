@@ -8,7 +8,7 @@ import red from '@material-ui/core/colors/red';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CloudUpload from '@material-ui/icons/CloudUpload';
-import { Link, withRouter } from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import Home from '@material-ui/icons/Home';
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -43,14 +43,28 @@ export class Cad extends Component {
     };
 
     async register_on_DB(props) {
-        let uid = await firebase.auth().currentUser.uid;
-        props.database.ref("users/" + uid).set({
-            description: this.state.placeDescription,
-            phone: this.state.placePhone,
-            name: this.state.placeName,
-            email: this.state.email,
-            uid: uid
-        });
+        let uid = await firebase.auth().currentUser.uid
+            .catch(function (error) {
+                const message = error.message;
+                alert(message);
+                console.log(error);
+                return false;
+            });
+        if (uid)
+            props.database.ref("users/" + uid)
+                .set({
+                    description: this.state.placeDescription,
+                    phone: this.state.placePhone,
+                    name: this.state.placeName,
+                    email: this.state.email,
+                    uid: uid
+                })
+                .catch(function (error) {
+                    const message = error.message;
+                    alert(message);
+                    console.log(error);
+                    return false;
+                });
     }
 
     async auth(props) {

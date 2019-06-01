@@ -11,11 +11,12 @@ const config = {
     authDomain: "webmenu-c7757.firebaseapp.com",
     databaseURL: "https://webmenu-c7757.firebaseio.com",
     projectid: "webmenu-c7757",
-    storaBucket: "webmenu-c7757.appspot.com",
+    storageBucket: "webmenu-c7757.appspot.com",
 };
 
 firebase.initializeApp(config);
 let database = firebase.database();
+let storage = firebase.storage();
 
 export class Main extends Component {
     state = {
@@ -31,8 +32,8 @@ export class Main extends Component {
     };
 
     render() {
-        const {email, placeName, placeDescription, placePhone } = this.state;
-        const values = {email, placeName, placeDescription, placePhone, database };
+        const {email, placeName, placeDescription, placePhone} = this.state;
+        const values = {email, placeName, placeDescription, placePhone, database, storage};
 
         const LoginPage = (props) => {
             return (
