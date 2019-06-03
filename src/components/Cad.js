@@ -42,29 +42,22 @@ export class Cad extends Component {
         this.setState({[input]: e.target.value});
     };
 
-    async register_on_DB(props) {
-        let uid = await firebase.auth().currentUser.uid
+    register_on_DB(props) {
+        let uid = firebase.auth().currentUser.uid;
+        props.database.ref("users/" + uid)
+            .set({
+                description: this.state.placeDescription,
+                phone: this.state.placePhone,
+                name: this.state.placeName,
+                email: this.state.email,
+                uid: uid
+            })
             .catch(function (error) {
                 const message = error.message;
                 alert(message);
                 console.log(error);
                 return false;
             });
-        if (uid)
-            props.database.ref("users/" + uid)
-                .set({
-                    description: this.state.placeDescription,
-                    phone: this.state.placePhone,
-                    name: this.state.placeName,
-                    email: this.state.email,
-                    uid: uid
-                })
-                .catch(function (error) {
-                    const message = error.message;
-                    alert(message);
-                    console.log(error);
-                    return false;
-                });
     }
 
     async auth(props) {
@@ -88,7 +81,7 @@ export class Cad extends Component {
                 placePhone: this.state.placePhone,
                 user: firebase.auth().currentUser
             });
-            await this.register_on_DB(this.props.values);
+            this.register_on_DB(this.props.values);
             this.props.history.push("/");
         }
     }
