@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Home from "./Home";
 import Login from "./Login";
-import Cad from './Cad'
+import Cad from './Cad';
+import Recoverpass from './Recoverpass';
 
 import * as firebase from "firebase/app";
 
@@ -44,6 +45,15 @@ export class Main extends Component {
             );
         };
 
+        const RecoverPage = (props) => {
+            return (
+                <Recoverpass
+                    updateState={this.updateState}
+                    values={values}
+                />
+            );
+        };
+
         const CadPage = (props) => {
             return (
                 <Cad
@@ -60,6 +70,7 @@ export class Main extends Component {
                         <Route path="/" exact component={Home} />
                         <Route path="/login" render={LoginPage} />
                         <Route path="/cadastro" render={CadPage} />
+                        <Route path="/recover" render={RecoverPage} />
                     </Switch>
                 </React.Fragment>
             </Router >

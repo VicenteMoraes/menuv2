@@ -43,21 +43,28 @@ export class Cad extends Component {
     };
 
     async register_on_DB(props) {
-        let uid = firebase.auth().currentUser.uid;
-        props.database.ref("users/" + uid)
-        .set({
-            description: this.state.placeDescription,
-            phone: this.state.placePhone,
-            name: this.state.placeName,
-            email: this.state.email,
-            uid: uid
-        })
-        .catch(function (error) {
-            const message = error.message;
-            alert(message);
-            console.log(error);
-            return false;
-        });
+        let uid = await firebase.auth().currentUser.uid
+            .catch(function (error) {
+                const message = error.message;
+                alert(message);
+                console.log(error);
+                return false;
+            });
+        if (uid)
+            props.database.ref("users/" + uid)
+                .set({
+                    description: this.state.placeDescription,
+                    phone: this.state.placePhone,
+                    name: this.state.placeName,
+                    email: this.state.email,
+                    uid: uid
+                })
+                .catch(function (error) {
+                    const message = error.message;
+                    alert(message);
+                    console.log(error);
+                    return false;
+                });
     }
 
     async auth(props) {
