@@ -36,8 +36,8 @@ export class Login extends Component {
     async Auth(props) {
         let response = await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
             .catch(function (error) {
-                var code = error.code;
-                var message = error.message;
+                const code = error.code;
+                const message = error.message;
                 if (code === 'auth/wrong-password') {
                     alert('Senha incorreta.');
                 } else {

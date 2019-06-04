@@ -34,6 +34,20 @@ export class Recoverpass extends Component {
         this.setState({[input]: e.target.value});
     };
 
+    async resetemail() {
+        let response = await firebase.auth().sendPasswordResetEmail(this.state.email)
+            .catch(function (error) {
+                const message = error.message;
+                alert(message);
+                console.log(error);
+                return false;
+            });
+        if (response === undefined) {
+            alert("Email enviado!");
+            this.props.history.push("/");
+        }
+    }
+
     render() {
         return (
             <MuiThemeProvider theme={theme}>
@@ -67,8 +81,10 @@ export class Recoverpass extends Component {
                     />
                     <br/>
                     <br/>
-                    <Button variant="contained" color="primary">
-                        <Link className="link" to="/">Recuperar</Link>
+                    <Button variant="contained" color="primary" onClick={() => {
+                        this.resetemail(this.props.values)
+                    }}>
+                        Recuperar
                     </Button>
                     <br/>
                     <br/>
