@@ -5,8 +5,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core//Typography'
 import red from '@material-ui/core/colors/red'
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import Lock from '@material-ui/icons/Lock'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -27,33 +25,10 @@ const theme = createMuiTheme({
 });
 
 
-export class Login extends Component {
+export class Recoverpass extends Component {
     state = {
         email: "",
-        password: "",
     };
-
-    async Auth(props) {
-        let response = await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-            .catch(function (error) {
-                var code = error.code;
-                var message = error.message;
-                if (code === 'auth/wrong-password') {
-                    alert('Senha incorreta.');
-                } else {
-                    alert(message);
-                }
-                console.log(error);
-                return false;
-            });
-        if (response) {
-            props.updateState({
-                email: this.state.email,
-                user: firebase.auth().currentUser
-            });
-            this.props.history.push("/");
-        }
-    }
 
     updateInput = input => e => {
         this.setState({[input]: e.target.value});
@@ -74,11 +49,10 @@ export class Login extends Component {
                         </Toolbar>
                     </AppBar>
                     <br/>
-                    <h4>Login</h4>
-
+                    <h4>Recuperar senha</h4>
                     <br/>
                     <TextField
-                        label="Usuário"
+                        label="Email cadastrado"
                         placeholder="Digite seu email"
                         margin="normal"
                         onChange={this.updateInput("email")}
@@ -87,37 +61,14 @@ export class Login extends Component {
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <AccountCircle color="primary"/>
                                 </InputAdornment>
                             ),
                         }}
                     />
                     <br/>
-                    <TextField
-                        label="Senha"
-                        placeholder="Digite sua senha"
-                        margin="normal"
-                        onChange={this.updateInput("password")}
-                        defaultValue={this.props.values.password}
-                        variant="outlined"
-                        type="password"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <Lock color="primary"/>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
                     <br/>
-                    Esqueceu a senha? <a href="/recover">Recuperar a senha</a>
-                    <br/>
-                    <br/>
-                    <Button variant="contained" color="primary"
-                            onClick={() => {
-                                this.Auth(this.props)
-                            }}>
-                        Entrar
+                    <Button variant="contained" color="primary">
+                        <Link className="link" to="/">Recuperar</Link>
                     </Button>
                     <br/>
                     <br/>
@@ -129,4 +80,4 @@ export class Login extends Component {
     }
 }
 
-export default withRouter(Login)
+export default withRouter(Recoverpass);
