@@ -63,8 +63,11 @@ export class Recoverpass extends Component {
                         </Toolbar>
                     </AppBar>
                     <br/>
-                    <h4>Recuperar senha</h4>
+                    <h3>Recuperar senha</h3>
                     <br/>
+                    <Typography>
+                        Informe seu email para alterar a senha
+                    </Typography>
                     <TextField
                         label="Email cadastrado"
                         placeholder="Digite seu email"
@@ -72,12 +75,6 @@ export class Recoverpass extends Component {
                         onChange={this.updateInput("email")}
                         defaultValue={this.props.values.email}
                         variant="outlined"
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                </InputAdornment>
-                            ),
-                        }}
                     />
                     <br/>
                     <br/>
